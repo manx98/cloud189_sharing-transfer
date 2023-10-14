@@ -1,7 +1,7 @@
 # 天翼云盘保存分享文件（无单次转存上限）
 
 ## 使用步骤
-1. 安装依赖环境(首次运行，根据设备选择其一执行)
+1. 安装环境(首次运行，根据设备选择其一执行)
    + 安卓手机使用Termux  
        ```shell
        pkg update
@@ -12,6 +12,7 @@
       ```shell
        sudo apt update
        sudo apt install python3 -y
+       sudo apt install python3-pip -y
        sudo apt install git -y
       ```
 2. 克隆源码
@@ -22,7 +23,7 @@
     ```shell
     cd cloud189_sharing-transfer
     ```
-4. 安装依赖(首次运行需要执行)
+4. 安装依赖包(首次运行需要执行)
    ```shell
     pip install -r requirements.txt
     ```
