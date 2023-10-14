@@ -461,6 +461,7 @@ if __name__ == '__main__':
     if not saveDir:
         log.error("无法获取保存目录信息")
     else:
+        log.info("开始转储分享文件,耗时较长请耐心等待...")
         ret = info.createBatchSaveTask(saveDir, 500, maxWorkers=args.t).run()
         if ret:
             log.info("所有分享文件已保存.")
