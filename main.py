@@ -22,16 +22,13 @@ def rsaEncrpt(password, public_key):
 
 
 def format_size(size):
-    # 定义不同的容量单位
     units = ['B', 'KB', 'MB', 'GB', 'TB']
 
-    # 初始化单位索引和初始容量
     unit_index = 0
     while size >= 1024 and unit_index < len(units) - 1:
         size /= 1024.0
         unit_index += 1
 
-    # 格式化为字符串，保留两位小数
     return f"{size:.2f} {units[unit_index]}"
 
 
@@ -60,15 +57,18 @@ class BatchSaveTask:
         self.tq = tqdm(desc='正在保存')
 
     def __updateTq(self, num=1):
-        self.tq.set_postfix({
+        data = {
             "剩余任务数": self.taskNum,
             "已保存文件数": self.savedFileNum,
             "已保存目录数:": self.saveDirNum,
             "已遍历目录数:": self.walkDirNum,
             "已保存文件总大小": format_size(self.savedFileSize)
-        })
+        }
         if num:
+            self.tq.set_postfix(data, refresh=False)
             self.tq.update(num)
+        else:
+            self.tq.set_postfix(data)
 
     def __incTaskNum(self, num):
         self.tqLock.acquire()
@@ -261,9 +261,9 @@ class Cloud189ShareInfo:
             time.sleep(1)
         return errorCode
 
-    def createBatchSaveTask(self, targetFolderId, batchSize, shareFolderId=None):
+    def createBatchSaveTask(self, targetFolderId, batchSize, shareFolderId=None, maxWorkers=3):
         return BatchSaveTask(shareInfo=self, batchSize=batchSize, targetFolderId=targetFolderId,
-                             shareFolderId=shareFolderId)
+                             shareFolderId=shareFolderId, maxWorkers=3)
 
 
 class Cloud189:
@@ -430,7 +430,8 @@ def getArgs():
     parser.add_argument('-l', help='分享链接(形如 https://cloud.189.cn/web/share?code=XXXXXXXXX)', required=True)
     parser.add_argument('-u', help='云盘用户名', required=True)
     parser.add_argument('-p', help='云盘用户密码', required=True)
-    parser.add_argument('-d', help='保存到的云盘的路径(必须存在)', required=True)
+    parser.add_argument('-d', help='保存到的云盘的路径(不存在会自动创建, 形如: /A/B)', required=True)
+    parser.add_argument('-t', help='转存线程数', default=5)
     return parser.parse_args()
 
 
@@ -460,7 +461,7 @@ if __name__ == '__main__':
     if not saveDir:
         log.error("无法获取保存目录信息")
     else:
-        ret = info.createBatchSaveTask(saveDir, 500).run()
+        ret = info.createBatchSaveTask(saveDir, 500, maxWorkers=args.t).run()
         if ret:
             log.info("所有分享文件已保存.")
             exit(0)
