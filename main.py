@@ -426,7 +426,7 @@ class Cloud189:
 
 
 def getArgs():
-    parser = argparse.ArgumentParser(description="天翼云盘保存分享文件(突破单次转存上限)")
+    parser = argparse.ArgumentParser(description="天翼云盘保存分享文件(无单次转存上限)")
     parser.add_argument('-l', help='分享链接(形如 https://cloud.189.cn/web/share?code=XXXXXXXXX)', required=True)
     parser.add_argument('-u', help='云盘用户名', required=True)
     parser.add_argument('-p', help='云盘用户密码', required=True)
