@@ -25,7 +25,7 @@
     ```
 4. 安装依赖包(首次运行需要执行)
    ```shell
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
     ```
 5. 执行转储分享 
    
